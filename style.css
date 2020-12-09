@@ -42,6 +42,7 @@
     width: 250px;
     height: 170px;
     background-color: rebeccapurple;
+    border-radius: 5px;
     z-index: 1000;
     display: flex;
     justify-content: center;
@@ -71,4 +72,87 @@
     padding: 20px;
     height: 1.2rem;
     border-radius: 5px;
+}
+
+.load-menu {
+    position: absolute;
+    width: 450px;
+    height: 250px;
+    border-radius: 5px;
+    z-index: 500;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(217, 9, 236);
+}
+
+.load-menu__box-wrap {
+    display: flex;
+}
+.load-menu__container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.load-menu__box {
+    width: 50px;
+    height: 50px;
+    border: white 2px solid;
+    border-radius: 5px;
+}
+
+.load-menu__inner {
+    display: flex;
+    flex-direction: column;
+}
+.load-menu__title {
+    font-family: "Open Sans", sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: rgb(255, 255, 255);
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+}
+.load-menu__title-img {
+    background-image: url(img/play.png);
+    background-size: 50px 50px;
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+@keyframes start-btn {
+    0% {
+        transform: rotateZ(0deg);
+    }
+    50% {
+        transform: rotateZ(-15deg);
+    }
+    100% {
+        transform: rotateZ(+15deg);
+    }
+}
+.load-menu__title-img:hover {
+    animation: start-btn 250ms;
+}
+
+@keyframes box-in-glass-animate {
+    from {
+        background-position: 0px -2px;
+    }
+    to {
+        background-position: 0px -1085px;
+    }
+}
+.box-in-glass {
+    display: none;
+    background: url(img/Boss_4.png);
+    width: 110px;
+    height: 108px;
+    animation: box-in-glass-animate 2s steps(10) infinite;
 }

@@ -1,8 +1,11 @@
+const startBtn = document.querySelector(".load-menu__title-img");
+const loadMenu = document.querySelector(".load-menu");
 const wrapper = document.querySelector(".wrapper");
 const borderBottom = wrapper.getBoundingClientRect().height;
 const borderRight = wrapper.getBoundingClientRect().width;
 const borderTop = wrapper.getBoundingClientRect().y;
 const borderLeft = wrapper.getBoundingClientRect().x;
+const colors = ["#C200FB", "#EC0868", "#FC2F00", "#EC7D10", "#FFBC0A"];
 const duration = 300;
 let step = 50;
 let directionStatus = null;
@@ -17,7 +20,6 @@ function createBox(wrapper) {
     box.className = "box";
     box.id = boxCount;
     boxMoveID = boxCount;
-    const colors = ["#C200FB", "#EC0868", "#FC2F00", "#EC7D10", "#FFBC0A"];
     const colorNumber = Math.floor(Math.random() * colors.length);
     box.style.backgroundColor = colors[colorNumber];
     wrapper.appendChild(box);
@@ -183,7 +185,9 @@ function timing(timeFraction) {
     return timeFraction;
 }
 
-window.addEventListener("load", () => {
+startBtn.addEventListener("click", () => {
+    loadMenu.style.display = "none";
+
     let box = createBox(wrapper);
 
     let start = performance.now();
