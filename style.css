@@ -1,0 +1,74 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap");
+
+.wrapper {
+    position: relative;
+    border: chocolate 1px solid;
+    height: 600px;
+    width: 500px;
+    border-radius: 5px;
+}
+.box {
+    box-sizing: border-box;
+    border: palegoldenrod 1px solid;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    left: 250px;
+    border-radius: 10px;
+}
+@keyframes destroy {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        display: none;
+    }
+}
+
+@keyframes show-total {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.total {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    width: 250px;
+    height: 170px;
+    background-color: rebeccapurple;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(207, 238, 229);
+    font-family: "Open Sans", sans-serif;
+    display: none;
+}
+.show-total {
+    display: flex;
+    animation: show-total 2s forwards;
+}
+.destroy {
+    animation: destroy 2s;
+    animation-fill-mode: forwards;
+}
+.container {
+    display: flex;
+    justify-content: center;
+}
+.score {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 700;
+    color: rgb(0, 48, 180);
+    margin-left: 1rem;
+    border: #fc2f00 2px solid;
+    padding: 20px;
+    height: 1.2rem;
+    border-radius: 5px;
+}
