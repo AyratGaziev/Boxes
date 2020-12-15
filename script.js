@@ -1,12 +1,16 @@
 const startBtn = document.querySelector(".load-menu__title-img");
 const loadMenu = document.querySelector(".load-menu");
 const wrapper = document.querySelector(".wrapper");
+const total = document.querySelector(".total");
+const totalScore = document.querySelector(".total__score");
+const totalHigh = document.querySelector(".total__high");
+const replay = document.querySelector(".total__replay");
 const borderBottom = wrapper.getBoundingClientRect().height;
 const borderRight = wrapper.getBoundingClientRect().width;
 const borderTop = wrapper.getBoundingClientRect().y;
 const borderLeft = wrapper.getBoundingClientRect().x;
 const colors = ["#C200FB", "#EC0868", "#FC2F00", "#EC7D10", "#FFBC0A"];
-const duration = 300;
+const duration = 450;
 let step = 50;
 let directionStatus = null;
 let boxDone = [];
@@ -14,6 +18,7 @@ let boxCount = 0;
 let boxMoveID = null;
 let tenBottomBoxes = [];
 let score = 0;
+let gameRuned = false;
 
 function createBox(wrapper) {
     const box = document.createElement("div");
@@ -51,7 +56,49 @@ function createBox(wrapper) {
     return box;
 }
 
-function animate(timing, duration, start, box) {
+function createStar(wrapper) {
+    const star = document.createElement("div");
+    star.className = "star";
+
+    const { width, height } = wrapper.getBoundingClientRect();
+    const randomHeigthRange = () => {
+        const random = Math.random();
+        return random > 0.25 && random < 0.75 ? random : randomHeigthRange();
+    };
+    const top = Math.floor(randomHeigthRange() * height);
+    const widthRange = width - 40;
+    const left = Math.floor(Math.random() * widthRange);
+    star.style.top = top + "px";
+    star.style.left = left + "px";
+
+    wrapper.appendChild(star);
+
+    return star;
+}
+
+function takeAStar(star, box) {
+    if (!star) {
+        return;
+    }
+
+    if (
+        box.offsetLeft + box.getBoundingClientRect().width >= star.offsetLeft &&
+        box.offsetLeft <=
+            star.offsetLeft + star.getBoundingClientRect().width &&
+        box.offsetTop + box.getBoundingClientRect().height >= star.offsetTop &&
+        box.offsetTop <= star.offsetTop + star.getBoundingClientRect().height
+    ) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function updateScore(score) {
+    document.querySelector(".score__now").textContent = `Score ${score}`;
+}
+
+function animate(timing, duration, start, box, star) {
     let boxHeight = box.getBoundingClientRect().height;
     let boxY = box.offsetTop - 1;
 
@@ -72,6 +119,13 @@ function animate(timing, duration, start, box) {
             );
         });
 
+        if (takeAStar(star, box)) {
+            wrapper.removeChild(star);
+            score += 10;
+            updateScore(score);
+            star = null;
+        }
+
         // Столкновение блока с нижней границей или с другим блоком
         if (boxY + boxHeight > borderBottom || hasBox) {
             //Столкновение с другим блоком
@@ -87,11 +141,23 @@ function animate(timing, duration, start, box) {
                 if (bottomBox[0].top - boxHeight - 2 < 0) {
                     cancelAnimationFrame(rAF);
 
-                    let total = document.querySelector(".total");
-                    total.textContent = `Total SCORE ${score}`;
+                    let highScore = localStorage.getItem("HighScore")
+                        ? localStorage.getItem("HighScore")
+                        : 0;
+
+                    totalScore.textContent = `Total Score ${score}`;
+                    totalHigh.textContent = `High Score: ${highScore}`;
+
                     total.classList.add("show-total");
 
-                    console.log(total);
+                    if (
+                        !localStorage.getItem("HighScore") ||
+                        +localStorage.getItem("HighScore") < score
+                    ) {
+                        localStorage.setItem("HighScore", score);
+                    }
+
+                    replay.addEventListener("click", () => location.reload());
 
                     return;
                 }
@@ -123,7 +189,7 @@ function animate(timing, duration, start, box) {
 
                 score += 10;
 
-                document.getElementById("score").textContent = `SCORE ${score}`;
+                updateScore(score);
 
                 Array.from(document.querySelectorAll(".box")).forEach((el) => {
                     el.style.top = el.offsetTop + step + "px";
@@ -162,6 +228,8 @@ function animate(timing, duration, start, box) {
 
             box = createBox(wrapper);
 
+            star = star ? star : createStar(wrapper);
+
             start = performance.now();
 
             boxY =
@@ -185,12 +253,32 @@ function timing(timeFraction) {
     return timeFraction;
 }
 
-startBtn.addEventListener("click", () => {
+function runGame() {
     loadMenu.style.display = "none";
 
     let box = createBox(wrapper);
 
+    let star = createStar(wrapper);
+
     let start = performance.now();
 
-    animate(timing, duration, start, box);
+    animate(timing, duration, start, box, star);
+
+    gameRuned = true;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    let highScore = localStorage.getItem("HighScore")
+        ? localStorage.getItem("HighScore")
+        : 0;
+
+    document.querySelector(
+        ".score__high"
+    ).textContent = `High score: ${highScore}`;
+});
+startBtn.addEventListener("click", runGame);
+document.addEventListener("keypress", (event) => {
+    if (event.key === "Enter" && gameRuned === false) {
+        runGame();
+    }
 });
