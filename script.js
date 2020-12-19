@@ -1,17 +1,23 @@
 const startBtn = document.querySelector(".load-menu__title-img");
+const mobileBtns = document.querySelector(".mobile-btns");
 const loadMenu = document.querySelector(".load-menu");
 const wrapper = document.querySelector(".wrapper");
 const total = document.querySelector(".total");
 const totalScore = document.querySelector(".total__score");
 const totalHigh = document.querySelector(".total__high");
 const replay = document.querySelector(".total__replay");
+const pauseBtn = document.querySelector(".pause-btn");
 const borderBottom = wrapper.getBoundingClientRect().height;
 const borderRight = wrapper.getBoundingClientRect().width;
 const borderTop = wrapper.getBoundingClientRect().y;
 const borderLeft = wrapper.getBoundingClientRect().x;
 const colors = ["#C200FB", "#EC0868", "#FC2F00", "#EC7D10", "#FFBC0A"];
-const duration = 450;
-let step = 50;
+const duration = 80;
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+);
+const mobileS = window.matchMedia("(max-width: 320px)").matches;
+const mobileL = window.matchMedia("(max-width: 425px)").matches;
 let directionStatus = null;
 let boxDone = [];
 let boxCount = 0;
@@ -19,6 +25,8 @@ let boxMoveID = null;
 let tenBottomBoxes = [];
 let score = 0;
 let gameRuned = false;
+let play = true;
+let step = mobileS ? 20 : mobileL ? 25 : 50;
 
 function createBox(wrapper) {
     const box = document.createElement("div");
@@ -32,24 +40,30 @@ function createBox(wrapper) {
     let boxLeftCount = box.offsetLeft;
     const boxWidth = box.getBoundingClientRect().width;
 
-    document.addEventListener("keydown", (event) => {
+    function boxMove(event) {
+        if (!play) {
+            return;
+        }
         if (
-            event.key === "ArrowRight" &&
-            box.getBoundingClientRect().x - borderLeft + boxWidth * 2 <
-                borderRight &&
+            (event.key === "ArrowRight" ||
+                event.target.className === "mobile-btns__right") &&
+            box.offsetLeft + boxWidth * 2 < borderRight &&
             +box.id === boxMoveID
         ) {
             boxLeftCount += step;
             box.style.left = boxLeftCount + "px";
         } else if (
-            event.key === "ArrowLeft" &&
-            box.offsetLeft >= 50 &&
+            (event.key === "ArrowLeft" ||
+                event.target.className === "mobile-btns__left") &&
+            box.offsetLeft >= step &&
             +box.id === boxMoveID
         ) {
             boxLeftCount -= step;
             box.style.left = boxLeftCount + "px";
         }
-    });
+    }
+    mobileBtns.addEventListener("click", boxMove);
+    document.addEventListener("keydown", boxMove);
 
     boxCount++;
 
@@ -95,14 +109,17 @@ function takeAStar(star, box) {
 }
 
 function updateScore(score) {
-    document.querySelector(".score__now").textContent = `Score ${score}`;
+    document.querySelector(".score__now").textContent = `Score: ${score}`;
 }
 
 function animate(timing, duration, start, box, star) {
     let boxHeight = box.getBoundingClientRect().height;
-    let boxY = box.offsetTop - 1;
+    let boxY = box.offsetTop;
 
     function draw(progress) {
+        if (!play) {
+            return;
+        }
         boxY = Math.floor(progress * 100);
         box.style.top = boxY + "px";
     }
@@ -177,14 +194,21 @@ function animate(timing, duration, start, box, star) {
 
             //Массив блоков заполнивших нижний ряд
             tenBottomBoxes = boxDone
-                .filter((b) => b.top === 550)
+                .filter((b) => {
+                    return (
+                        b.top + boxHeight ===
+                        wrapper.offsetTop +
+                            wrapper.getBoundingClientRect().height -
+                            2
+                    );
+                })
                 .map((el) => el.element.id);
-
             //Удаляем полный нижний ряд
             if (tenBottomBoxes.length === 10) {
                 tenBottomBoxes.forEach((id) => {
                     document.getElementById(`${+id}`).classList.add("destroy");
                 });
+
                 boxDone = [];
 
                 score += 10;
@@ -226,6 +250,8 @@ function animate(timing, duration, start, box, star) {
                 }
             });
 
+            savedTime = null;
+
             box = createBox(wrapper);
 
             star = star ? star : createStar(wrapper);
@@ -254,6 +280,9 @@ function timing(timeFraction) {
 }
 
 function runGame() {
+    console.log("mobileS", mobileS);
+    console.log("mobileL", mobileL);
+
     loadMenu.style.display = "none";
 
     let box = createBox(wrapper);
@@ -262,9 +291,22 @@ function runGame() {
 
     let start = performance.now();
 
+    pauseBtn.style.display = "block";
+
     animate(timing, duration, start, box, star);
 
     gameRuned = true;
+
+    pauseBtn.addEventListener("click", ({ target }) => {
+        target.style.backgroundImage = play
+            ? "url(./img/play-in-game.png)"
+            : "url(./img/pause.png)";
+        play = !play;
+    });
+
+    if (isMobile) {
+        mobileBtns.style.display = "flex";
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {

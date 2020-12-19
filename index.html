@@ -4,39 +4,37 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="style.css" />
-        <title>Tetris</title>
+        <title>Boxes</title>
     </head>
     <body>
         <div class="container">
             <div class="wrapper">
                 <div class="load-menu">
-                    <div class="load-menu__container">
-                        <div class="load-menu__box-container">
-                            <div class="load-menu__box-wrap">
-                                <div
-                                    class="load-menu__box"
-                                    style="background-color: #fc2f00"
-                                ></div>
-                                <div
-                                    class="load-menu__box"
-                                    style="background-color: #ec0868"
-                                ></div>
-                            </div>
-                            <div class="load-menu__box-wrap">
-                                <div
-                                    class="load-menu__box"
-                                    style="background-color: #ec7d10"
-                                ></div>
-                                <div
-                                    class="load-menu__box"
-                                    style="background-color: #ffbc0a"
-                                ></div>
-                            </div>
+                    <div class="load-menu__box-container">
+                        <div class="load-menu__box-wrap">
+                            <div
+                                class="load-menu__box"
+                                style="background-color: #fc2f00"
+                            ></div>
+                            <div
+                                class="load-menu__box"
+                                style="background-color: #ec0868"
+                            ></div>
                         </div>
-                        <div class="load-menu__title">
-                            <div class="load-menu__title-text">BOX GAME</div>
-                            <div class="load-menu__title-img"></div>
+                        <div class="load-menu__box-wrap">
+                            <div
+                                class="load-menu__box"
+                                style="background-color: #ec7d10"
+                            ></div>
+                            <div
+                                class="load-menu__box"
+                                style="background-color: #ffbc0a"
+                            ></div>
                         </div>
+                    </div>
+                    <div class="load-menu__title">
+                        <div class="load-menu__title-text">BOX GAME</div>
+                        <div class="load-menu__title-img"></div>
                     </div>
                 </div>
                 <div class="total">
@@ -46,12 +44,18 @@
                 </div>
             </div>
 
-            <div class="score">
-                <div class="score__now">Score: 0</div>
-                <div class="score__high">High score:</div>
-            </div>
+            <div class="right-panel">
+                <div class="score">
+                    <div class="score__now">Score: 0</div>
+                    <div class="score__high">High score:</div>
+                    <div class="pause-btn"></div>
+                </div>
 
-            <div class="box-in-glass"></div>
+                <div class="mobile-btns">
+                    <div class="mobile-btns__left"></div>
+                    <div class="mobile-btns__right"></div>
+                </div>
+            </div>
         </div>
         <script src="./script.js"></script>
     </body>
